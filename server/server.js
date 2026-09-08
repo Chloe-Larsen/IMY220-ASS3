@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 import { connectDB, getDB } from "./db.js";
 
-// Student Number: uXXXXXXX
+// Student Number: u25004141
 
 dotenv.config();
 
@@ -15,11 +15,56 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/posts", async (req, res) => {
-    // TODO: Retrieve all posts from MongoDB
+    try {
+        const db = getDB();
+        const collection = db.collection("posts");
+        const posts = await collection.find({}).toArray();
+        console.log("Posts Found")
+        res.status(200).json(posts);
+    }
+    catch (error) {
+        console.error("Error fetching posts:", error);
+        res.status(500).json({
+            message: "Failed to retrieve posts",
+            error: error.message
+        });
+    }
 });
 
 app.post("/api/posts", async (req, res) => {
-    // TODO: Validate and add a post to MongoDB
+    const { username, caption } = req.body;
+
+    if (!username || !caption) {
+        return res.status(400).json({
+            message: "Username and caption are required"
+        });
+    }
+
+    const trimmedUsername = username.trim();
+    const trimmedCaption = caption.trim();
+
+    if (!trimmedUsername || !trimmedCaption) {
+        return res.status(400).json({
+            message: "Username and caption are required"
+        });
+    }
+
+    try {
+        const db = getDB();
+        const collection = db.collection("posts");
+        const newPost = { trimmedUsername, trimmedCaption };
+        const result = await collection.insertOne(newPost);
+        res.json({
+            _id: result.insertedId,
+            ...newPost
+        });
+    } catch (error) {
+        console.error("Error adding post:", error);
+        res.status(500).json({
+            message: "Failed to add post",
+            error: error.message
+        });
+    }
 });
 
 connectDB()

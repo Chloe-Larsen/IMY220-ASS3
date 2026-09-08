@@ -1,22 +1,21 @@
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
-// Student Number: uXXXXXXX
-
+// Student Number: u25004141
+dotenv.config();
 let client;
 let db;
 
 async function connectDB() {
-    const uri = process.env.MONGO_URI;
-
+    const uri = process.env.MONGODB_URI;
     client = new MongoClient(uri);
-
-    // TODO: Connect to MongoDB
-
-    // TODO: Store the PhotoShare database in db
+    await client.connect();
+    db = client.db("photoShareDB");
+    console.log("Connected to MongoDB");
 }
 
 function getDB() {
-    // TODO: Return the database
+    return db;
 }
 
 export { connectDB, getDB };
