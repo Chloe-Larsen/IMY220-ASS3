@@ -19,8 +19,8 @@ app.get("/api/posts", async (req, res) => {
         const db = getDB();
         const collection = db.collection("posts");
         const posts = await collection.find({}).toArray();
-        console.log("Posts Found")
         res.status(200).json(posts);
+        console.log("Posts Found");
     }
     catch (error) {
         console.error("Error fetching posts:", error);
@@ -52,7 +52,7 @@ app.post("/api/posts", async (req, res) => {
     try {
         const db = getDB();
         const collection = db.collection("posts");
-        const newPost = { trimmedUsername, trimmedCaption };
+        const newPost = { username: trimmedUsername, caption: trimmedCaption };
         const result = await collection.insertOne(newPost);
         res.json({
             _id: result.insertedId,
