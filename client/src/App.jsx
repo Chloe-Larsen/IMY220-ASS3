@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-// Student Number: uXXXXXXX
+// Student Number: u25004141
 
 function PostCard({ post }) {
     return (
